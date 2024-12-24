@@ -16,19 +16,33 @@
         background-color: #f0f0f0;
     }
     .container {
-        width: 200px;
-        height: 200px;
+        width: 400px;
+        height: 400px;
         position: relative;
+        max-width: 400px;
+        max-height: 400px;
+        
+    }
+    *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
     img {
         width: 100%;
         height: 100%;
+        border-radius: 50%;
         /* animation: spin 5s linear 1; */
+    }
+    #wheel{
+        height: 400px;
+        width: 400px;
     }
 </style>
 <body>
      <div class="container">
-        <img id="wheel" src="./cropped_image.png" alt="">
+        <!-- <img id="wheel" src="./assets/images/wheel.svg" alt=""> -->
+         <div id="wheel"></div>
      </div>
 </body>
 <script type="module" src="./assets/main.js"></script>
