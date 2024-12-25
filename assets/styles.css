@@ -233,7 +233,6 @@
 
     .attribution__link {
         color: #000;
-        text-decoration: none;
         transition: color var(--transition-speed);
         padding: 0.1rem 0.2rem;
     }
