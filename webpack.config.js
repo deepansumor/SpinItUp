@@ -1,4 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
+
 
 // Common configuration
 const commonConfig = {
@@ -8,7 +10,13 @@ const commonConfig = {
         library: 'SpinItUp',                  // Library name
         libraryTarget: 'umd',                 // Universal module definition
         globalObject: 'this',                 // Ensures compatibility in Node.js
+        libraryExport: 'default',
     },
+    plugins: [
+        new webpack.DefinePlugin({
+            ENABLE_LOG: false
+        }),
+    ],
     resolve: {
         extensions: ['.js'], // Automatically resolve these extensions
     },
@@ -22,6 +30,11 @@ const devConfig = {
         ...commonConfig.output,
         filename: 'spinitup.js', // Output filename for dev
     },
+    plugins: [
+        new webpack.DefinePlugin({
+            ENABLE_LOG: true
+        }),
+    ],
     devtool: 'source-map', // Include source maps for debugging
 };
 
