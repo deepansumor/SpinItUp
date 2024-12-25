@@ -88,6 +88,7 @@ const generateRandomStopPosition = (segmentCount) => {
  */
 const showPrizeModal = (segment) => {
     DOM_ELEMENTS.prizeImage.setAttribute('src', segment.icon);
+    DOM_ELEMENTS.prizeImage.classList.add('shown');
     DOM_ELEMENTS.prizeModal.classList.add("prize-modal--visible");
 };
 

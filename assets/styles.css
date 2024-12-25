@@ -171,6 +171,11 @@
         width: var(--prize-image-width);
         width: var(--prize-image-width);
         height: var(--prize-image-width);
+        opacity: 0;
+    }
+
+    .prize-modal__prize-img.shown {
+        opacity: 1;
     }
 
     .prize-modal__message-img {
