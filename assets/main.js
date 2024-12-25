@@ -70,7 +70,7 @@ const DOM_ELEMENTS = {
  * @returns {string} Complete URL for the image
  */
 const generateImagePath = (imageName) => {
-    return `${location.origin}/assets/images/${imageName}`;
+    return `./assets/images/${imageName}`;
 };
 
 /**
