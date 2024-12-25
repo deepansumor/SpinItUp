@@ -9,7 +9,7 @@ const commonConfig = {
         path: path.resolve(__dirname, 'dist'), // Output directory
         library: 'SpinItUp',                  // Library name
         libraryTarget: 'umd',                 // Universal module definition
-        globalObject: 'this',                 // Ensures compatibility in Node.js
+        globalObject: "typeof self !== 'undefined' ? self : this", // Safe global object
         libraryExport: 'default',
     },
     plugins: [

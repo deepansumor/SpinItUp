@@ -7,7 +7,7 @@
 		exports["SpinItUp"] = factory();
 	else
 		root["SpinItUp"] = factory();
-})(this, () => {
+})(typeof self !== 'undefined' ? self : this, () => {
 return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Slice)
 /* harmony export */ });
-/* harmony import */ var _spinitup__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./spinitup */ "./lib/spinitup.js");
+/* harmony import */ var _spinitup_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./spinitup.js */ "./lib/spinitup.js");
 
 
 /**
@@ -38,7 +38,7 @@ class Slice {
      * @returns {Array<Slice>} - An array of Slice objects representing the slices of the wheel.
      */
     static create(segments) {
-        _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('Creating slices with segments:', segments);
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Creating slices with segments:', segments);
 
         const numberOfSlices = segments.length;
         let currentAngle = 0; // Starting angle for the first slice
@@ -65,7 +65,7 @@ class Slice {
      * @returns {number|null} - The index of the clicked slice, or null if no slice was clicked.
      */
     static getClickedSliceIndex(event, canvas, size, slices) {
-        _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('Determining clicked slice based on event:', event);
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Determining clicked slice based on event:', event);
 
         // Get click coordinates relative to the canvas
         const rect = canvas.getBoundingClientRect();
@@ -75,7 +75,7 @@ class Slice {
 
         // Check if click is outside the wheel
         if (distanceFromCenter > size / 2) {
-            _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('Click outside the wheel.');
+            _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Click outside the wheel.');
             return null; // Return null if clicked outside the wheel
         }
 
@@ -89,12 +89,12 @@ class Slice {
                 normalizedAngle >= slice.startAngle &&
                 normalizedAngle < slice.endAngle
             ) {
-                _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log(`Clicked slice index: ${slice.index}`);
+                _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log(`Clicked slice index: ${slice.index}`);
                 return slice.index;
             }
         }
 
-        _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('No slice found for the click event.');
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('No slice found for the click event.');
         return null;
     }
 
@@ -107,7 +107,7 @@ class Slice {
      * @param {Object} segment - The data associated with the slice, such as display text and appearance.
      */
     constructor(startAngle, endAngle, index, segment) {
-        _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('Creating Slice:', {
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Creating Slice:', {
             startAngle,
             endAngle,
             index,
@@ -129,7 +129,7 @@ class Slice {
      * @param {boolean} isSelected - Indicates whether the slice is currently selected (for visual highlight).
      */
     draw(context, size, isSelected) {
-        _spinitup__WEBPACK_IMPORTED_MODULE_0__["default"].log('Drawing slice:', {
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Drawing slice:', {
             index: this.index,
             isSelected,
         });
@@ -139,13 +139,13 @@ class Slice {
             backgroundColor = 'transparent', // Fill color of the slice
             color = '#000000', // Text color for the slice label
             fontSize = 16, // Font size for the slice label
-            borderColor = 'black', // Border color of the slice
+            borderColor = 'transparent', // Border color of the slice
             borderWidth = 2, // Border width of the slice
             textOffset = 0.5, // Offset for label positioning within the slice
             textAlign = 'center', // Text alignment for the label
             textBaseline = 'middle', // Text baseline for the label
             padding = 0, // Padding for label positioning
-            text = this.index + 1, // Default label is the index + 1
+            text = "", // Default label is the index + 1
         } = this.segment;
 
         // Begin drawing the slice
@@ -191,12 +191,20 @@ class Slice {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* binding */ SpinItUp)
 /* harmony export */ });
 /* harmony import */ var _slice_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./slice.js */ "./lib/slice.js");
 /* harmony import */ var _wheel_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./wheel.js */ "./lib/wheel.js");
 
 
+
+// Define pin positions with their corresponding rotation angles in degrees
+const pinPositions = {
+    top: 90,
+    right: 0,
+    bottom: -90,
+    left: 180,
+};
 
 /**
  * SpinItUp: A customizable Spin-the-Wheel class.
@@ -204,7 +212,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 // Main SpinItUp class
-class SpinItUp{
+class SpinItUp {
     /**
      * Constructor for initializing the SpinItUp class.
      * @param {HTMLElement} elem - The HTML element representing the wheel.
@@ -236,15 +244,19 @@ class SpinItUp{
             stopAt: null,
             direction: 'clockwise',
             rotate: 0,
+            pin: {},
             mode: "edit",
             ...options,
             type: this.elem instanceof HTMLImageElement ? "image" : "draw",
-            log:true
         };
 
         this.directions = ['clockwise', 'anti-clockwise'];
         this.key = `spin-it-up-${Math.random().toString(36).substring(7)}`;
         SpinItUp.log('Generated unique key for instance:', this.key);
+
+        this.pinOffset = pinPositions[this.options.pin.position] || pinPositions.top;
+        SpinItUp.log(this.pinOffset);
+
 
         this.elem.style.overflow = 'hidden';
         this.options.rotate = 0;
@@ -256,8 +268,9 @@ class SpinItUp{
         })());
     }
 
-    static log(){
-         true && console.log(...arguments);
+    static log() {
+        this.ENABLE_LOG =  false || true;
+        this.ENABLE_LOG && console.log("[SPIN-IT-UP]", ...arguments);
     }
     /**
      * Generates a unique class name based on the instance key.
@@ -342,9 +355,10 @@ class SpinItUp{
     updateStopAngle() {
         const slice = 360 / this.options.segments.length;
         this.stopAngle = this.minMax(
-            this.options.stopAt * slice - slice + 10,
-            this.options.stopAt * slice - 10
-        );
+            this.options.stopAt * slice - slice + slice * 0.25,
+            this.options.stopAt * slice - slice * 0.25
+        ) + this.pinOffset;
+        SpinItUp.log(`stopAngle`, this.stopAngle);
     }
 
     /**
@@ -421,11 +435,15 @@ class SpinItUp{
         if (this.state !== this.states.SPINNING) {
             return this.callback(this.state, { message: 'Cannot stop; wheel is not spinning' });
         }
-        this.canvas.style.animation = "none";
         this.state = this.states.FINISHED;
-        this.callback(this.state, { segment: this.getWinningSegment() });
+        this.callback(this.state, { ...this.getWinningSegment() });
         clearTimeout(this.timeout);
         this.options.mode = this.options._mode;
+    }
+
+    reset() {
+        this.canvas.style.animation = "none";
+        this.stop();
     }
 
     /**
@@ -434,7 +452,7 @@ class SpinItUp{
      */
     getWinningSegment() {
         let index = this.options.stopAt - 1;
-        return this.options.segments[index];
+        return { index, segment: this.options.segments[index] };
     }
 
     /**
@@ -449,7 +467,6 @@ class SpinItUp{
     }
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SpinItUp);
 
 /***/ }),
 
@@ -468,17 +485,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Define pin positions with their corresponding rotation angles in degrees
-const pinPositions = {
-    top: "-90deg",
-    right: "0deg",
-    bottom: "90deg",
-    left: "180deg",
-    "top-right": "-45deg",
-    "bottom-right": "45deg",
-    "bottom-left": "135deg",
-    "top-left": "-135deg",
-};
 
 // Wheel class to handle canvas-specific logic and manage the wheel's behavior
 class Wheel {
@@ -501,7 +507,7 @@ class Wheel {
         const container = document.createElement('div');
         container.style.cssText = `width: ${this.size}px; height: ${this.size}px; overflow: hidden;`;
         container.appendChild(canvas); // Add canvas to the container
-
+        container.className = "spin-it-up-container";
         // Get the 2D rendering context for the canvas
         this.context = canvas.getContext('2d');
 
@@ -529,21 +535,68 @@ class Wheel {
     }
 
     /**
-     * Draws an image on the wheel, rotating it by the specified angle.
-     * 
-     * @param {HTMLImageElement} image - The image to draw on the wheel.
-     */
+  * Draws a high-resolution image on the canvas wheel, ensuring it fits perfectly.
+  * 
+  * @param {HTMLImageElement} image - The image to draw on the wheel.
+  */
     async drawImage(image) {
-        const rotationAngle = this.options.rotate || 0; // Get the rotation angle from options
-        const centerX = this.size / 2; // X-coordinate of the wheel's center
-        const centerY = this.size / 2; // Y-coordinate of the wheel's center
+        
+        // Get the device pixel ratio, falling back to 1 if unavailable
+        const dpr = window.devicePixelRatio || 1;
 
-        this.context.save(); // Save the current drawing state
-        this.context.translate(centerX, centerY); // Move the origin to the center of the wheel
-        this.context.rotate((rotationAngle * Math.PI) / 180); // Rotate the context by the specified angle (in radians)
-        this.context.drawImage(image, -this.size / 2, -this.size / 2, this.size, this.size); // Draw the image centered on the wheel
-        this.context.restore(); // Restore the original drawing state
+        // Get the CSS dimensions of the canvas
+        const displayWidth = this.size;
+        const displayHeight = this.size;
+
+        // Set the canvas buffer size to match the display size multiplied by DPR
+        this.canvas.width = displayWidth * dpr;
+        this.canvas.height = displayHeight * dpr;
+
+        // Set the canvas CSS size to maintain visual dimensions
+        this.canvas.style.width = `${displayWidth}px`;
+        this.canvas.style.height = `${displayHeight}px`;
+
+        // Scale all future drawing operations by the DPR
+        this.context.scale(dpr, dpr);
+
+        // Enable image smoothing for better quality
+        this.context.imageSmoothingEnabled = true;
+        this.context.imageSmoothingQuality = 'high';
+
+        // Calculate the aspect ratios
+        const canvasAspectRatio = displayWidth / displayHeight;
+        const imageAspectRatio = image.width / image.height;
+
+        let drawWidth = displayWidth;
+        let drawHeight = displayHeight;
+        let x = 0;
+        let y = 0;
+
+        // Determine dimensions to cover the canvas while maintaining aspect ratio
+        if (imageAspectRatio > canvasAspectRatio) {
+            // Image is wider than canvas
+            drawHeight = displayHeight;
+            drawWidth = drawHeight * imageAspectRatio;
+            x = (displayWidth - drawWidth) / 2;
+        } else {
+            // Image is taller than canvas
+            drawWidth = displayWidth;
+            drawHeight = drawWidth / imageAspectRatio;
+            y = (displayHeight - drawHeight) / 2;
+        }
+
+        // Clear the canvas before drawing
+        // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw the image
+        this.context.drawImage(
+            image,
+            x, y,
+            drawWidth, drawHeight
+        );
     }
+
+
 
     /**
      * Draws all slices of the wheel on the canvas, optionally highlighting a selected slice.
@@ -567,7 +620,7 @@ class Wheel {
     addClickListener(slices, drawAllSlices) {
         this.canvas.addEventListener('click', (event) => {
 
-            if(this.options.mode != "edit") return;
+            if (this.options.mode != "edit") return;
             // Determine which slice was clicked
             const clickedIndex = _slice_js__WEBPACK_IMPORTED_MODULE_0__["default"].getClickedSliceIndex(event, this.canvas, this.size, slices);
 

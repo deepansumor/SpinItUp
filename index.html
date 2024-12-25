@@ -1,49 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpinItUp</title>
+
+    <!-- SEO Meta Tags -->
+    <title>SpinItUp - Exciting Wheel Game | Win Amazing Prizes</title>
+    <meta name="description"
+        content="Play SpinItUp, the exciting wheel game where you can win amazing prizes! Spin the wheel and test your luck today.">
+    <meta name="keywords" content="spin wheel game, prizes, lucky wheel, gaming, SpinItUp">
+    <meta name="author" content="https://github.com/deepansumor">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="SpinItUp - Wheel Game">
+    <meta property="og:description" content="Spin the wheel and win amazing prizes!">
+    <meta property="og:image" content="./assets/images/wheel.png">
+
+    <link rel="stylesheet" href="./assets/styles.css">
 </head>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-    }
-    .container {
-        width: 400px;
-        height: 400px;
-        position: relative;
-        max-width: 400px;
-        max-height: 400px;
-        
-    }
-    *{
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-    img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        /* animation: spin 5s linear 1; */
-    }
-    #wheel{
-        height: 400px;
-        width: 400px;
-    }
-</style>
+
+
+
 <body>
-     <div class="container">
-        <!-- <img id="wheel" src="./assets/images/wheel.svg" alt=""> -->
-         <div id="wheel"></div>
-     </div>
+    <main class="game-wrapper">
+        <div class="game-container">
+            <section class="wheel-section" aria-label="Spin Wheel Game">
+                <header class="wheel-section__header">
+                    <img class="wheel-section__header-img" src="./assets/images/header.png" alt="SpinItUp Game Logo">
+                </header>
+
+                <div class="wheel-section__pin">
+                    <img class="wheel-section__pin-img" src="./assets/images/pin.png" alt="Wheel pointer">
+                </div>
+
+                <img id="wheel" class="wheel-section__wheel" style="opacity: 0;" src="./assets/images/wheel.png"
+                    alt="Prize wheel" aria-label="Spinning wheel with prizes">
+
+                <footer class="wheel-section__footer">
+                    <img id="spin" class="wheel-section__spin-btn" src="./assets/images/spin-button.png"
+                        alt="Spin button" aria-label="Click to spin the wheel">
+                </footer>
+            </section>
+
+            <div class="attribution">
+                <div class="attribution__content">
+                    <p class="attribution__text">
+                        <span>🎨 UI Design by <a href="https://www.figma.com/@lawssn" class="attribution__link" target="_blank" rel="noopener noreferrer">@lawssn</a>
+                            <span class="attribution__separator">|</span></span>
+                        <span>👨‍💻 Developed by <a href="https://github.com/deepansumor" class="attribution__link" target="_blank" rel="noopener noreferrer">Deepansu Mor</a></span>
+                    </p>
+                   
+                </div>
+            </div>
+
+            <div id="showPrize" class="prize-modal" role="dialog" aria-modal="true" aria-label="Prize announcement">
+                <div class="prize-modal__content">
+                    <div class="prize-modal__wrapper">
+                        <img class="prize-modal__background" src="./assets/images/modal-background.png"
+                            alt="Modal background">
+                        <div class="prize-modal__inner">
+                            <div class="prize-modal__header">
+                                <img class="prize-modal__header-img" src="./assets/images/congrats.png"
+                                    alt="Congratulations text">
+                            </div>
+                            <div class="prize-modal__body">
+                                <div class="prize-modal__message">
+                                    <img class="prize-modal__message-img" src="./assets/images/won.png"
+                                        alt="You won message">
+                                </div>
+                                <div>
+                                    <img class="prize-modal__prize-img" src="./assets/images/4Lives.png"
+                                        alt="Prize image">
+                                </div>
+                                <div class="prize-modal__spin-again">
+                                    <img class="wheel-section__spin-btn" src="./assets/images/ok-button.png"
+                                        alt="Spin again button">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="./dist/spinitup.js"></script>
+    <script src="./assets/main.js"></script>
+
+
+
 </body>
-<script  src="./dist/spinitup.min.js"></script>
+
 </html>
