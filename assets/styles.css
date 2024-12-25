@@ -40,7 +40,14 @@
     .game-wrapper {
         background-image: url(./images/background.png);
         background-position: center;
-        min-height: 100vh;
+        position: fixed;
+        inset: 0;
+        height: 100vh;
+        overflow: auto;
+        display: grid;
+        place-items: center;
+        top: 0;
+        bottom: 0;
     }
 
     .game-container {
@@ -59,6 +66,7 @@
     .wheel-section {
         position: relative;
         width: 100%;
+        margin-bottom: 40px;
     }
 
     .wheel-section__header {
@@ -161,6 +169,8 @@
     .prize-modal__prize-img {
         margin-top: calc(var(--spacing-xs) * -1);
         width: var(--prize-image-width);
+        width: var(--prize-image-width);
+        height: var(--prize-image-width);
     }
 
     .prize-modal__message-img {
@@ -168,7 +178,6 @@
     }
 
     .prize-modal__spin-again {
-        margin-top: var(--spacing-xs);
         cursor: pointer;
     }
 
@@ -303,7 +312,8 @@
             --prize-image-width: 90px;
             --wheel-pin-width: 60px
         }
-        .attribution__text{
+
+        .attribution__text {
             flex-direction: column;
         }
     }
