@@ -1,0 +1,380 @@
+    :root {
+        /* Colors */
+        --color-shadow: rgba(64, 172, 27, 0.6);
+        --color-modal-overlay: rgba(77, 77, 77, 0.7);
+
+        /* Sizes */
+        --container-max-width: 400px;
+        --wheel-pin-width: 80px;
+        --spin-button-width: 50%;
+        --ok-button-width: 40%;
+        --prize-image-width: 120px;
+        --won-message-width: 200px;
+
+        /* Spacing */
+        --spacing-xs: 0.5rem;
+        --spacing-sm: 1rem;
+        --spacing-md: 2rem;
+        --spacing-lg: 3rem;
+
+        /* Border Radius */
+        --border-radius-circle: 50%;
+        --border-radius-modal: 60px;
+
+        /* Transitions */
+        --transition-speed: 0.3s;
+        --modal-transition: all 0.4s;
+
+        /* Z-index */
+        --z-index-pin: 9;
+        --z-index-modal: 10;
+        --z-index-modal-content: 11;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .game-wrapper {
+        background-image: url(./images/background.png);
+        background-position: center;
+        min-height: 100vh;
+    }
+
+    .game-container {
+        max-width: var(--container-max-width);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: auto;
+        padding: var(--spacing-sm);
+        position: relative;
+    }
+
+    /* Wheel Section Styles */
+    .wheel-section {
+        position: relative;
+        width: 100%;
+    }
+
+    .wheel-section__header {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        padding: 0;
+        margin-bottom: calc(var(--spacing-lg) + 0.5vh);
+    }
+
+    .wheel-section__header-img {
+        width: 100%;
+    }
+
+    .wheel-section__pin {
+        position: absolute;
+        width: var(--wheel-pin-width);
+        left: 50%;
+        transform: translate(-50%, -15%);
+        z-index: var(--z-index-pin);
+    }
+
+    .wheel-section__pin-img {
+        width: 100%;
+    }
+
+    .wheel-section__wheel {
+        width: 100%;
+        box-shadow: 0px 14px 11px var(--color-shadow);
+        border-radius: var(--border-radius-circle);
+    }
+
+    .wheel-section__footer {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        padding: 0;
+        margin-top: calc(var(--spacing-lg) + 0.5vh);
+    }
+
+    .wheel-section__spin-btn {
+        width: var(--spin-button-width);
+        cursor: pointer;
+        transition: transform var(--transition-speed);
+    }
+
+    .wheel-section__spin-btn:hover {
+        transform: translateY(5px);
+    }
+
+    /* Modal Styles */
+    .prize-modal {
+        visibility: hidden;
+        opacity: 0;
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-modal-overlay);
+        transition: var(--modal-transition);
+        z-index: var(--z-index-modal);
+    }
+
+    .prize-modal--visible {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .prize-modal__content {
+        width: calc(100% - 0rem);
+        padding: var(--spacing-sm);
+        max-width: var(--container-max-width);
+    }
+
+    .prize-modal__wrapper {
+        position: relative;
+    }
+
+    .prize-modal__background {
+        width: 100%;
+    }
+
+    .prize-modal__inner {
+        position: absolute;
+        inset: 0;
+        z-index: var(--z-index-modal-content);
+        border-radius: var(--border-radius-modal);
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .prize-modal__header-img {
+        width: 100%;
+    }
+
+    .prize-modal__body {
+        text-align: center;
+    }
+
+    .prize-modal__prize-img {
+        margin-top: calc(var(--spacing-xs) * -1);
+        width: var(--prize-image-width);
+    }
+
+    .prize-modal__message-img {
+        width: var(--won-message-width);
+    }
+
+    .prize-modal__spin-again {
+        margin-top: var(--spacing-xs);
+        cursor: pointer;
+    }
+
+    .prize-modal__spin-again img {
+        width: var(--ok-button-width);
+    }
+
+
+    /* Attribution Styles */
+    .attribution {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.85rem;
+        z-index: var(--z-index-modal-content);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 0px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .attribution__content {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .attribution__text {
+        color: #000;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .attribution__text emoji {
+        font-size: 1.1em;
+        vertical-align: -0.1em;
+    }
+
+    .attribution__subtext {
+        margin: 0.3rem 0 0 0;
+        font-size: 0.75rem;
+    }
+
+    .attribution__link {
+        color: #000;
+        text-decoration: none;
+        transition: color var(--transition-speed);
+        padding: 0.1rem 0.2rem;
+    }
+
+    .attribution__link:hover {
+        color: #2d7b13;
+        text-decoration: underline;
+    }
+
+    .attribution__link--small {
+        font-size: 0.75rem;
+    }
+
+    .attribution__separator {
+        margin: 0 0.7rem;
+        color: #999;
+    }
+
+    /* Hide attribution when modal is visible */
+    .prize-modal--visible~.attribution {
+        display: none;
+    }
+
+    /* Responsive adjustments */
+    @media screen and (max-width: 480px) {
+        .attribution {
+            font-size: 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+        }
+
+        .attribution__subtext {
+            font-size: 0.7rem;
+        }
+
+        .attribution__text {
+            display: flex;
+            gap: 0.3rem;
+            justify-content: space-between;
+        }
+
+        .attribution__separator {
+            display: none;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .attribution {
+            position: static;
+            background: none;
+            border-top: 1px solid #000;
+            padding: var(--spacing-sm) 0;
+        }
+    }
+
+    @media screen and (max-width: 375px) {
+        :root {
+            --wheel-pin-width: 60px;
+            --prize-image-width: 80px;
+            --won-message-width: 160px;
+            --spacing-lg: 1.75rem;
+            --spacing-md: 1rem;
+            --prize-image-width: 105px;
+            --wheel-pin-width: 70px
+        }
+
+        .wheel-section__spin-btn {
+            width: 50%;
+        }
+
+        .prize-modal__inner {
+            padding: var(--spacing-lg);
+        }
+    }
+
+
+    @media screen and (max-width: 340px) {
+        :root {
+            --spacing-lg: 1.5rem;
+            --prize-image-width: 90px;
+            --wheel-pin-width: 60px
+        }
+        .attribution__text{
+            flex-direction: column;
+        }
+    }
+
+    @media screen and (max-width: 315px) {
+        :root {
+            --spacing-lg: 2rem;
+            --prize-image-width: 80px;
+        }
+    }
+
+    @media screen and (max-width: 300px) {
+        :root {
+            --spacing-lg: 2rem;
+            --prize-image-width: 70px;
+            --wheel-pin-width: 50px
+        }
+    }
+
+    /* Landscape Mode Optimization */
+    @media screen and (max-height: 480px) and (orientation: landscape) {
+        .game-container {
+            height: auto;
+            padding: var(--spacing-xs);
+        }
+
+        .wheel-section__header {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .wheel-section__footer {
+            margin-top: var(--spacing-sm);
+        }
+
+        .wheel-section__wheel {
+            max-width: 300px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .prize-modal__inner {
+            padding: var(--spacing-sm);
+        }
+    }
+
+    /* High DPI Screens */
+    @media screen and (-webkit-min-device-pixel-ratio: 2),
+    screen and (min-resolution: 192dpi) {
+        .wheel-section__wheel {
+            box-shadow: 0px 10px 8px var(--color-shadow);
+        }
+    }
+
+    /* Reduced Motion Preference */
+    @media (prefers-reduced-motion: reduce) {
+        .wheel-section__spin-btn {
+            transition: none;
+        }
+
+        .prize-modal {
+            transition: opacity 0.1s;
+        }
+    }
+
+    /* Print Styles */
+    @media print {
+        .game-wrapper {
+            background-image: none;
+        }
+
+        .wheel-section__spin-btn,
+        .prize-modal {
+            display: none;
+        }
+    }
