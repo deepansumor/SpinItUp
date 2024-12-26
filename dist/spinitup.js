@@ -245,7 +245,7 @@ class SpinItUp {
             direction: 'clockwise',
             rotate: 0,
             pin: {},
-            mode: "edit",
+            mode: "view",
             ...options,
             type: this.elem instanceof HTMLImageElement ? "image" : "draw",
         };
