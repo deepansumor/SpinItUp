@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/configure.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="configuration-form">
+            <form id="configurationForm" class="">
+                <div class="grid">
+
+                    <div class="form-group required">
+                        <label>Spin the Wheel Name</label>
+                        <input type="text" required name="survey_name" value="Spin the Wheel">
+                    </div>
+                    <input type="hidden" name="frequency" value="-2">
+                    <div class="form-group required">
+                        <label>Number of Spins</label>
+                        <input required type="number" name="spins" value="5">
+                    </div>
+                    <div class="form-group required">
+                        <label>Duration in Seconds</label>
+                        <input required type="number" name="duration" value="5">
+                    </div>
+
+                    <input type="hidden" name="rewards_snippet[override_default_settings]" value="true">
+                    <input type="hidden" name="rewards_snippet[frequency]" value="1">
+
+                    <div class="form-group required">
+                        <label>Attempts</label>
+                        <div class="attempts">
+                            <input required type="number" name="rewards_snippet[attempt]" value="1">
+                            <select required name="rewards_snippet[unit]">
+                                <option value="i">Per minute</option>
+                                <option value="h">Per hour</option>
+                                <option value="d">Per day</option>
+                                <option value="w">Per week</option>
+                                <option value="m">Per month</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group ">
+                        <label>Background Color</label>
+                        <input type="color" name="--background-color" value="">
+
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Direction</label>
+                        <select required name="direction">
+                            <option value="clockwise">Clockwise</option>
+                            <option value="anti-clockwise">Anti Clockwise</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group required">
+                        <label>Pin Position</label>
+                        <select required name="pin[position]">
+                            <option value="top">Top</option>
+                            <option value="bottom">Bottom</option>
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group required">
+                        <label>Number of Prizes</label>
+                        <input required name="slices" type="number" value="6">
+                    </div>
+
+
+
+                    <div class="form-group image-picker required">
+                        <label>Header Image</label>
+                        <img class="image-preview" id="header-preview">
+                        <div class="file-input">
+                            <input type="file" name="header-image" id="headerImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='headerImage']`)">
+                            <label for="headerImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group image-picker required">
+                        <label>Spin Button Image</label>
+                        <img class="image-preview" id="spin-preview">
+                        <div class="file-input">
+                            <input type="file" name="spin-image" id="spinImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='spinImage']`)">
+                            <label for="spinImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group image-picker required">
+                        <label>Wheel Image</label>
+                        <img class="image-preview" id="wheel-preview">
+                        <div class="file-input">
+                            <input type="file" name="wheel-image" id="wheelImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='wheelImage']`)">
+                            <label for="wheelImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group image-picker required">
+                        <label>Background Image</label>
+                        <img class="image-preview" id="bg-preview">
+                        <div class="file-input">
+                            <input type="file" name="background-image" id="bgImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='bgImage']`)">
+                            <label for="bgImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group image-picker required">
+                        <label>Pointer Image</label>
+                        <img class="image-preview" id="pin-preview">
+                        <div class="file-input">
+                            <input type="file" name="pin-image" id="pinImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='pinImage']`)">
+                            <label for="pinImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group image-picker required">
+                        <label>Center Image</label>
+                        <img class="image-preview" id="center-preview">
+                        <div class="file-input">
+                            <input type="file" name="center-image" id="centerImage" accept="image/*"
+                                onchange="updateFileName(this, `[for='centerImage']`)">
+                            <label for="centerImage" class="file-input button">Choose File</label>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Pin Offset X</label>
+                        <input type="range" name="pin[offsets][--pin-offset-x]" min="0" max="100" step="1"
+                            class="slider">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pin Offset Y</label>
+                        <input type="range" min="0" name="pin[offsets][--pin-offset-y]" max="100" step="1"
+                            class="slider">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Next Configure Prizes &#187;</button>
+            </form>
+            <form id="segmentConfigForm" class="hidden">
+                <div id="segments">
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Spin the Wheel Name</label>
+                            <input type="text" readonly name="text" value="Segment 1">
+                        </div>
+                        <div class="form-group required">
+                            <label>Max Number of win <span class="hint"> ( -1 = No limit ) </span></label>
+                            <input type="number"required  name="max_number_of_win" value="1000">
+                        </div>
+
+                        <div class="form-group required">
+                            <label>Reward Type</label>
+                            <select required name="reward_type">
+                                <option value="offers">Offers / Discounts</option>
+                                <option value="nothing">No Rewards</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Reward Value</label>
+                            <select name="reward_value">
+                                <option value="12">10% Off</option>
+                                <option value="23">20% Off</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+                    <div class="form-group">
+                        <label for="">Winning Message</label>
+                        <textarea name="winning_message" rows="3"></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" id="backToSettings" class="submit-btn outline-btn">&#171; Back to Settings</button>
+                        <div class="action-sub-buttons">
+                            <button type="button" id="nextSegment" class="submit-btn">Next Prize &#187; </button>
+                            <button type="button" id="previousSegment" disabled class="submit-btn">&#171; Previous Prize</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <iframe src="./preview.html" id="preview"></iframe>
+    </div>
+    <script type="module" src="./assets/configure.js"></script>
+</body>
+
+</html>

@@ -29,6 +29,10 @@
         --z-index-pin: 9;
         --z-index-modal: 10;
         --z-index-modal-content: 11;
+
+        /* --background-image: url(./images/background.png); */
+        --pin-offset-x: 0%;
+        --pin-offset-y: 25%;
     }
 
     * {
@@ -82,10 +86,10 @@
     }
 
     .wheel-section__pin {
-        position: absolute;
+        position: fixed;
         width: var(--wheel-pin-width);
         left: 50%;
-        transform: translate(-50%, -15%);
+        transform: translate(calc(-50% + var(--pin-offset-x)), calc(-50% + var(--pin-offset-y)));
         z-index: var(--z-index-pin);
     }
 
