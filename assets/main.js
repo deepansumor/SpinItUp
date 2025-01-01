@@ -116,8 +116,7 @@ const initializeWheel = () => {
         ...WHEEL_CONFIG,
         stopAt: generateRandomStopPosition(configuredSegments.length),
         segments: configuredSegments,
-        callback: handleSpinComplete,
-        mode:"edit"
+        callback: handleSpinComplete
     });
 };
 
