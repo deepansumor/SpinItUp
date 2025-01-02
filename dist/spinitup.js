@@ -244,17 +244,24 @@ class SpinItUp {
             stopAt: null,
             direction: 'clockwise',
             rotate: 0,
-            pin: {},
-            mode: "edit",
+            pin: {
+                position: "top",
+            },
+            mode: "view",
             ...options,
             type: this.elem instanceof HTMLImageElement ? "image" : "draw",
+        };
+
+        this.options.pin.offsets = options.pin.offsets || {
+            "--pin-offset-x": "0%",
+            "--pin-offset-y": "25%"
         };
 
         this.directions = ['clockwise', 'anti-clockwise'];
         this.key = `spin-it-up-${Math.random().toString(36).substring(7)}`;
         SpinItUp.log('Generated unique key for instance:', this.key);
 
-        this.pinOffset = pinPositions[this.options.pin.position] || pinPositions.top;
+        this.pinOffset = pinPositions[this.options.pin.position] != undefined ? pinPositions[this.options.pin.position] : pinPositions.top;
         SpinItUp.log(this.pinOffset);
 
 
@@ -326,6 +333,11 @@ class SpinItUp {
         this.canvas = canvasWheel.canvas;
 
         SpinItUp.log(this.canvas);
+
+        if (this.options.mode == "edit") {
+            this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.selectSlice(0);
+        };
     }
 
     /**
@@ -347,6 +359,11 @@ class SpinItUp {
         this.canvas = canvasWheel.canvas;
 
         SpinItUp.log(this.canvas);
+
+        if (this.options.mode == "edit") {
+            this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.selectSlice(0);
+        };
     }
 
     /**
@@ -408,7 +425,7 @@ class SpinItUp {
         if (!this.options.segments[this.options.stopAt - 1]) {
             throw new Error(`stopAt must be a valid Number within the segments array 1 - ${this.options.segments.length}`);
         }
-        if (this.state !== this.states.STOPPED) {
+        if (this.state != this.states.STOPPED && this.state != this.states.FINISHED) {
             return this.callback(this.state, { message: 'Wheel is already spinning' });
         }
         this.state = this.states.SPINNING;
@@ -422,17 +439,21 @@ class SpinItUp {
     #spin() {
         this.style();
         this.callback(this.state);
-        this.canvas.style.animation = `${this.getClassName('animation-rotate')} ${this.options.duration}ms ${this.options.easing} 1 forwards`;
-        this.timeout = setTimeout(() => this.stop(), this.options.duration);
-        this.options._mode = this.options.mode;
-        this.options.mode = null;
+        this.canvas.style.animation = "none";
+        // a delay
+        setTimeout(() => {
+            this.canvas.style.animation = `${this.getClassName('animation-rotate')} ${this.options.duration}ms ${this.options.easing} 1 forwards`;
+            this.timeout = setTimeout(() => this.stop(), this.options.duration);
+            this.options._mode = this.options.mode;
+            this.options.mode = null;
+        }, 0);
     }
 
     /**
      * Stops the spinning of the wheel and determines the winning segment.
      */
     stop() {
-        if (this.state !== this.states.SPINNING) {
+        if (this.state !== this.states.SPINNING && this.state !== this.states.FINISHED) {
             return this.callback(this.state, { message: 'Cannot stop; wheel is not spinning' });
         }
         this.state = this.states.FINISHED;
@@ -486,6 +507,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
 // Wheel class to handle canvas-specific logic and manage the wheel's behavior
 class Wheel {
     /**
@@ -505,7 +528,7 @@ class Wheel {
 
         // Create a container to hold the canvas and apply styles
         const container = document.createElement('div');
-        container.style.cssText = `width: ${this.size}px; height: ${this.size}px; overflow: hidden;`;
+        container.style.cssText = `width: ${this.size}px; height: ${this.size}px; overflow: hidden;position:relative`;
         container.appendChild(canvas); // Add canvas to the container
         container.className = "spin-it-up-container";
         // Get the 2D rendering context for the canvas
@@ -518,8 +541,31 @@ class Wheel {
         // Set the wheel shape to a circle
         this.elem.style.borderRadius = '50%';
 
+
         // Optionally, set the pin position
-        // this.setPin();
+        this.setPin();
+    }
+
+    //  get edge of canvas to place pin
+    getCircleEdge(position) {
+        const rect = this.canvas.getBoundingClientRect(); // Get the bounding box of the element
+        const centerX = rect.left + rect.width / 2; // Calculate the center X of the circle
+        const centerY = rect.top + rect.height / 2; // Calculate the center Y of the circle
+
+        switch (position) {
+            case 'left':
+                return { x: rect.left, y: centerY }; // Left edge
+            case 'right':
+                return { x: rect.right, y: centerY }; // Right edge
+            case 'top':
+                return { x: centerX, y: rect.top }; // Top edge
+            case 'bottom':
+                return { x: centerX, y: rect.bottom }; // Bottom edge
+            case 'center':
+                return { x: centerX, y: centerY }; // Center
+            default:
+                throw new Error('Invalid position. Valid values are left, right, top, bottom, center.');
+        }
     }
 
     /**
@@ -529,9 +575,19 @@ class Wheel {
      * this.setPin({ position: "top-right" });
      */
     setPin() {
-        const { position = "top" } = this.options.pin || {}; // Get the pin position from options or use "top" by default
-        const deg = pinPositions[position]; // Get the rotation angle for the specified position
-        this.elem.style.rotate = deg; // Apply the rotation angle to the wheel
+        const { position = "top" } = this.options.pin || { offsets: {} }; // Get the pin position from options or use "top" by default
+
+        const pin = document.querySelector(".wheel-section__pin");
+        let edges = this.getCircleEdge(position);
+        pin.style.top = `${edges.y}px`;
+        pin.style.left = `${edges.x}px`;
+
+        let circleEdges = this.getCircleEdge("center");
+
+        const circle = document.querySelector(".wheel-section__center");
+        circle.style.top = `${circleEdges.y}px`;
+        circle.style.left = `${circleEdges.x}px`;
+
     }
 
     /**
@@ -540,7 +596,7 @@ class Wheel {
   * @param {HTMLImageElement} image - The image to draw on the wheel.
   */
     async drawImage(image) {
-        
+
         // Get the device pixel ratio, falling back to 1 if unavailable
         const dpr = window.devicePixelRatio || 1;
 
@@ -610,6 +666,24 @@ class Wheel {
         );
     }
 
+    // Select the slice by index
+    selectSlice(index, drawAllSlices) {
+        const centerX = this.size / 2; // X-coordinate of the wheel's center
+        const centerY = this.size / 2; // Y-coordinate of the wheel's center
+
+        // Clear the canvas
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Restore the canvas state after clearing
+        this.context.save();
+        this.context.translate(centerX, centerY); // Move origin back to the center
+        this.context.rotate((this.options.rotate * Math.PI) / 180); // Rotate to the specified angle
+        this.context.restore();
+
+        // Redraw slices with the clicked slice highlighted
+        drawAllSlices(index);
+    }
+
     /**
      * Adds a click event listener to the canvas to detect clicks on slices.
      * When a slice is clicked, it redraws the wheel and highlights the selected slice.
@@ -618,30 +692,24 @@ class Wheel {
      * @param {Function} drawAllSlices - Callback to redraw all slices with an updated selection.
      */
     addClickListener(slices, drawAllSlices) {
-        this.canvas.addEventListener('click', (event) => {
+        // this.canvas.addEventListener('click', (event) => {
 
-            if (this.options.mode != "edit") return;
-            // Determine which slice was clicked
-            const clickedIndex = _slice_js__WEBPACK_IMPORTED_MODULE_0__["default"].getClickedSliceIndex(event, this.canvas, this.size, slices);
+        //     if (this.options.mode != "edit") return;
+        //     // Determine which slice was clicked
+        //     const clickedIndex = Slice.getClickedSliceIndex(event, this.canvas, this.size, slices);
 
-            if (isNaN(clickedIndex)) return; // Ignore clicks outside the wheel
+        //     if (isNaN(clickedIndex)) return; // Ignore clicks outside the wheel
 
-            const centerX = this.size / 2; // X-coordinate of the wheel's center
-            const centerY = this.size / 2; // Y-coordinate of the wheel's center
+        //     this.selectSlice(clickedIndex); // Highlight the selected slice
 
-            // Clear the canvas
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        //     SpinItUp.log(`Slice clicked: ${clickedIndex}`); // Log the index of the clicked slice
 
-            // Restore the canvas state after clearing
-            this.context.save();
-            this.context.translate(centerX, centerY); // Move origin back to the center
-            this.context.rotate((this.options.rotate * Math.PI) / 180); // Rotate to the specified angle
-            this.context.restore();
+        //     try {
+        //         this.options.callback("SEGMENT_CLICKED", { index: clickedIndex, segment: slices[clickedIndex].segment })
+        //     } catch (error) {
 
-            // Redraw slices with the clicked slice highlighted
-            drawAllSlices(clickedIndex);
-            _spinitup_js__WEBPACK_IMPORTED_MODULE_1__["default"].log(`Slice clicked: ${clickedIndex}`); // Log the index of the clicked slice
-        });
+        //     }
+        // });
     }
 }
 

@@ -1,0 +1,7 @@
+.wheel {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    width: 90%;
+    margin: auto;
+}

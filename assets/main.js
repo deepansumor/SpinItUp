@@ -43,6 +43,13 @@ const PRIZE_SEGMENTS = [
     }
 ];
 
+// Preload the images 
+
+PRIZE_SEGMENTS.forEach(segment => {
+    const image = new Image();
+    image.src = `./assets/images/${segment.icon}`;
+});
+
 /**
  * Wheel configuration options
  * @type {Object}
@@ -88,6 +95,7 @@ const generateRandomStopPosition = (segmentCount) => {
  */
 const showPrizeModal = (segment) => {
     DOM_ELEMENTS.prizeImage.setAttribute('src', segment.icon);
+    DOM_ELEMENTS.prizeImage.classList.add('shown');
     DOM_ELEMENTS.prizeModal.classList.add("prize-modal--visible");
 };
 
@@ -115,7 +123,14 @@ const initializeWheel = () => {
         ...WHEEL_CONFIG,
         stopAt: generateRandomStopPosition(configuredSegments.length),
         segments: configuredSegments,
-        callback: handleSpinComplete
+        callback: handleSpinComplete,
+        pin: {
+            position: "top",
+            offesets: {
+                "--pin-offset-x": "-10%",
+                "--pin-offset-y": "25%"
+            }
+        }
     });
 };
 
