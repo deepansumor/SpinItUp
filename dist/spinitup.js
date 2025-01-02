@@ -333,6 +333,11 @@ class SpinItUp {
         this.canvas = canvasWheel.canvas;
 
         SpinItUp.log(this.canvas);
+
+        if (this.options.mode == "edit") {
+            this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.selectSlice(0);
+        };
     }
 
     /**
@@ -354,6 +359,11 @@ class SpinItUp {
         this.canvas = canvasWheel.canvas;
 
         SpinItUp.log(this.canvas);
+
+        if (this.options.mode == "edit") {
+            this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.selectSlice(0);
+        };
     }
 
     /**
@@ -565,12 +575,18 @@ class Wheel {
      * this.setPin({ position: "top-right" });
      */
     setPin() {
-        const { position = "top"} = this.options.pin || { offsets: {} }; // Get the pin position from options or use "top" by default
+        const { position = "top" } = this.options.pin || { offsets: {} }; // Get the pin position from options or use "top" by default
 
         const pin = document.querySelector(".wheel-section__pin");
         let edges = this.getCircleEdge(position);
         pin.style.top = `${edges.y}px`;
         pin.style.left = `${edges.x}px`;
+
+        let circleEdges = this.getCircleEdge("center");
+
+        const circle = document.querySelector(".wheel-section__center");
+        circle.style.top = `${circleEdges.y}px`;
+        circle.style.left = `${circleEdges.x}px`;
 
     }
 
@@ -650,6 +666,24 @@ class Wheel {
         );
     }
 
+    // Select the slice by index
+    selectSlice(index, drawAllSlices) {
+        const centerX = this.size / 2; // X-coordinate of the wheel's center
+        const centerY = this.size / 2; // Y-coordinate of the wheel's center
+
+        // Clear the canvas
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Restore the canvas state after clearing
+        this.context.save();
+        this.context.translate(centerX, centerY); // Move origin back to the center
+        this.context.rotate((this.options.rotate * Math.PI) / 180); // Rotate to the specified angle
+        this.context.restore();
+
+        // Redraw slices with the clicked slice highlighted
+        drawAllSlices(index);
+    }
+
     /**
      * Adds a click event listener to the canvas to detect clicks on slices.
      * When a slice is clicked, it redraws the wheel and highlights the selected slice.
@@ -658,36 +692,24 @@ class Wheel {
      * @param {Function} drawAllSlices - Callback to redraw all slices with an updated selection.
      */
     addClickListener(slices, drawAllSlices) {
-        this.canvas.addEventListener('click', (event) => {
+        // this.canvas.addEventListener('click', (event) => {
 
-            if (this.options.mode != "edit") return;
-            // Determine which slice was clicked
-            const clickedIndex = _slice_js__WEBPACK_IMPORTED_MODULE_0__["default"].getClickedSliceIndex(event, this.canvas, this.size, slices);
+        //     if (this.options.mode != "edit") return;
+        //     // Determine which slice was clicked
+        //     const clickedIndex = Slice.getClickedSliceIndex(event, this.canvas, this.size, slices);
 
-            if (isNaN(clickedIndex)) return; // Ignore clicks outside the wheel
+        //     if (isNaN(clickedIndex)) return; // Ignore clicks outside the wheel
 
-            const centerX = this.size / 2; // X-coordinate of the wheel's center
-            const centerY = this.size / 2; // Y-coordinate of the wheel's center
+        //     this.selectSlice(clickedIndex); // Highlight the selected slice
 
-            // Clear the canvas
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        //     SpinItUp.log(`Slice clicked: ${clickedIndex}`); // Log the index of the clicked slice
 
-            // Restore the canvas state after clearing
-            this.context.save();
-            this.context.translate(centerX, centerY); // Move origin back to the center
-            this.context.rotate((this.options.rotate * Math.PI) / 180); // Rotate to the specified angle
-            this.context.restore();
+        //     try {
+        //         this.options.callback("SEGMENT_CLICKED", { index: clickedIndex, segment: slices[clickedIndex].segment })
+        //     } catch (error) {
 
-            // Redraw slices with the clicked slice highlighted
-            drawAllSlices(clickedIndex);
-            _spinitup_js__WEBPACK_IMPORTED_MODULE_1__["default"].log(`Slice clicked: ${clickedIndex}`); // Log the index of the clicked slice
-
-            try {
-                this.options.callback("SEGMENT_CLICKED", { index: clickedIndex, segment: slices[clickedIndex].segment })
-            } catch (error) {
-
-            }
-        });
+        //     }
+        // });
     }
 }
 
