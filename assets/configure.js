@@ -240,6 +240,7 @@ function inputFileToBlob(inputElement) {
 document.querySelector('[name="reward_type"]').addEventListener('change', function (e) {
     const rewardValue = document.querySelector('[name="reward_value"]');
     rewardValue.classList.remove('is-invalid');
+    rewardValue.value = "";
 
     if (e.target.value === "offers") {
         // disable readonly attribute and invalid class
@@ -250,6 +251,7 @@ document.querySelector('[name="reward_type"]').addEventListener('change', functi
 });
 function updateSegegmentData(segmentIndex, data) {
     SpinTheWheelSegments[segmentIndex] = { ...SpinTheWheelSegments[segmentIndex], ...data };
+    return true
 }
 
 function updateSegmentForm(segmentIndex) {
@@ -280,12 +282,14 @@ function updateSegmentForm(segmentIndex) {
         isValid = true;
     }
 
-    if (!isValid) return;
-
-    let segment = SpinTheWheelSegments[segmentIndex];
-    if (!segment) return;
+    if (!isValid) return false;
 
     const data = formDataToJSON(new FormData(segmentForm));
+
+
+    let segment = SpinTheWheelSegments[segmentIndex];
+    if (!segment) return updateSegegmentData(currentIndex, data);;
+
     Object.keys(segment).forEach(key => {
         const input = segmentForm.querySelector(`[name="${key}"]`);
         if (input) {
@@ -293,10 +297,12 @@ function updateSegmentForm(segmentIndex) {
             input.classList.remove('is-invalid');
         };
         // remove invalid class
-        
-    });
 
+    });
+    // trigger change event to update the form
+    rewardType.dispatchEvent(new Event('change'));
     rewardValue.removeAttribute('disabled');
+    rewardValue.value = segment.reward_value || 0;
     segmentForm.setAttribute('data-index', segmentIndex);
 
     // enable disable next and previous buttons
@@ -311,11 +317,14 @@ function updateSegmentForm(segmentIndex) {
     Emitter.emit("select:segment", segmentIndex);
 
     updateSegegmentData(currentIndex, data);
+
+    return true;
 }
 
 document.getElementById('previousSegment').addEventListener('click', function () {
     const segmentForm = document.getElementById('segmentConfigForm');
     const index = Number(segmentForm.getAttribute('data-index'));
+    document.getElementById('nextSegment').innerHTML = "Next Prize &#187;";
     if (index === 0) return;
     updateSegmentForm(index - 1);
 });
@@ -331,6 +340,8 @@ document.getElementById('nextSegment').addEventListener('click', function () {
     const index = Number(segmentForm.getAttribute('data-index'));
     this.innerHTML = "Next Prize &#187;";
     if (index === SpinTheWheelSegments.length - 1) {
+        this.innerHTML = "Finish";
+        if (!updateSegmentForm(index + 1)) return;
         this.innerHTML = "Finishing...";
         // this name has to be plural 
         SpinTheWheelConfig.segment = SpinTheWheelSegments;
@@ -348,7 +359,7 @@ function SaveConfig() {
         delete segment.borderColor;
         return segment;
     });
-    
+
     console.log("Final Config", config);
 }
 
