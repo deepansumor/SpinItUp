@@ -196,7 +196,7 @@ class Slice {
             textAlign = 'center',
             textBaseline = 'middle',
             padding = 0,
-            text = "NO",
+            text = "",
             textPosition = "left-to-right", // Default text position
             textAngleOffset = 0
         } = this.segment;
@@ -391,6 +391,11 @@ class SpinItUp {
 
         if (this.options.mode == "edit") {
             this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.updateSlice = (index,data) => {
+                this.options.segments[index] = data;
+                slices[index].segment = data;
+                slices[index].draw(canvasWheel.context,canvasWheel.size,false);
+            };
             this.selectSlice(0);
         };
     }
@@ -417,6 +422,10 @@ class SpinItUp {
 
         if (this.options.mode == "edit") {
             this.selectSlice = (index) => canvasWheel.selectSlice(index, drawAllSlices);
+            this.updateSlice = (index,data) => {
+                this.options.segments[index] = data;
+                slices[index].draw(canvasWheel.context,canvasWheel.size,false,data)
+            };
             this.selectSlice(0);
         };
     }
