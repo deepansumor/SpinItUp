@@ -120,64 +120,119 @@ class Slice {
         this.segment = segment; // Data associated with the slice
     }
 
+    textPositions = {
+        /**
+         * Draws text from left to right.
+         */
+        'left-to-right': (context, text, x, y, angle) => {
+            context.translate(x, y); // Move to the specified position
+            context.rotate(angle); // Rotate the canvas for alignment
+            context.fillText(text, 0, 0); // Render the text
+            context.rotate(-angle); // Reset the rotation
+            context.translate(-x, -y); // Reset the position
+        },
+    
+        /**
+         * Draws text from right to left (reversed characters).
+         */
+        'right-to-left': (context, text, x, y, angle) => {
+            context.translate(x, y);
+            context.rotate(angle);
+            context.fillText(text.split("").reverse().join(""), 0, 0); // Reverse the text
+            context.rotate(-angle);
+            context.translate(-x, -y);
+        },
+    
+        /**
+         * Draws text vertically from top to bottom.
+         */
+        'top-to-bottom': (context, text, x, y) => {
+            context.translate(x, y);
+            text.split("").forEach((char, i) => {
+                context.fillText(char, 0, i * 18); // Draw each character vertically
+            });
+            context.translate(-x, -y);
+        },
+    
+        /**
+         * Draws text vertically from bottom to top (reversed order).
+         */
+        'bottom-to-top': (context, text, x, y) => {
+            context.translate(x, y);
+            text.split("").reverse().forEach((char, i) => {
+                context.fillText(char, 0, -i * 18); // Reverse and draw vertically
+            });
+            context.translate(-x, -y);
+        },
+    
+        /**
+         * Draws text diagonally from top-left to bottom-right.
+         */
+        'diagonal-top-left': (context, text, x, y, angle) => {
+            context.translate(x, y); // Move to the specified position
+            context.rotate(angle - Math.PI / 4); // Adjust angle for diagonal alignment
+            context.fillText(text, 0, 0); // Render the text
+            context.rotate(-(angle - Math.PI / 4)); // Reset the rotation
+            context.translate(-x, -y); // Reset the position
+        },
+    };
+    
     /**
      * Draws the slice on the provided canvas context.
-     * Each slice is rendered with specified styles and a label.
-     * 
-     * @param {CanvasRenderingContext2D} context - The canvas rendering context.
-     * @param {number} size - The size (diameter) of the wheel.
-     * @param {boolean} isSelected - Indicates whether the slice is currently selected (for visual highlight).
      */
     draw(context, size, isSelected) {
         _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Drawing slice:', {
             index: this.index,
             isSelected,
         });
-
-        // Destructure properties from the segment for styling and display
+    
         const {
-            backgroundColor = 'transparent', // Fill color of the slice
-            color = '#000000', // Text color for the slice label
-            fontSize = 16, // Font size for the slice label
-            borderColor = 'transparent', // Border color of the slice
-            borderWidth = 2, // Border width of the slice
-            textOffset = 0.5, // Offset for label positioning within the slice
-            textAlign = 'center', // Text alignment for the label
-            textBaseline = 'middle', // Text baseline for the label
-            padding = 0, // Padding for label positioning
-            text = "", // Default label is the index + 1
+            backgroundColor = 'transparent',
+            color = '#000000',
+            fontSize = 16,
+            borderColor = 'transparent',
+            borderWidth = 2,
+            textOffset = 0.5,
+            textAlign = 'center',
+            textBaseline = 'middle',
+            padding = 0,
+            text = "NO",
+            textPosition = "left-to-right", // Default text position
+            textAngleOffset = 0
         } = this.segment;
-
-        // Begin drawing the slice
+    
         context.beginPath();
-        context.moveTo(size / 2, size / 2); // Move to center of the wheel
-        context.arc(size / 2, size / 2, size / 2, this.startAngle, this.endAngle); // Draw slice arc
+        context.moveTo(size / 2, size / 2);
+        context.arc(size / 2, size / 2, size / 2, this.startAngle, this.endAngle);
         context.closePath();
-
-        // Set fill style and fill the slice
+    
         context.fillStyle = isSelected ? 'yellow' : backgroundColor;
         context.fill();
-
-        // Draw slice border if specified
+    
         if (borderWidth > 0) {
             context.lineWidth = borderWidth;
             context.strokeStyle = borderColor;
             context.stroke();
         }
-
-        // Calculate text position within the slice
-        const textAngle = this.startAngle + (this.endAngle - this.startAngle) / 2; // Center angle of the slice
-        const radius = size / 2.5 - padding; // Radius for text placement
-        const textX = size / 2 + radius * Math.cos(textAngle) * textOffset; // X-coordinate of text
-        const textY = size / 2 + radius * Math.sin(textAngle) * textOffset; // Y-coordinate of text
-
-        // Set text properties and render the label
+    
+        const textAngle = this.startAngle + (this.endAngle - this.startAngle) / 2;
+        const radius = size / 2.5 - padding;
+        const textX = size / 2 + radius * Math.cos(textAngle) * textOffset;
+        const textY = size / 2 + radius * Math.sin(textAngle) * textOffset;
+    
         context.fillStyle = color;
         context.font = `${fontSize}px Arial`;
         context.textAlign = textAlign;
         context.textBaseline = textBaseline;
-        context.fillText(text, textX, textY);
+    
+        if (this.textPositions[textPosition]) {
+            this.textPositions[textPosition](context, text, textX, textY, textAngle + textAngleOffset);
+        } else {
+            this.textPositions['left-to-right'](context, text, textX, textY, textAngle + textAngleOffset);
+        }
     }
+    
+    
 }
 
 
@@ -588,6 +643,8 @@ class Wheel {
         circle.style.top = `${circleEdges.y}px`;
         circle.style.left = `${circleEdges.x}px`;
 
+        // document.body.style.setProperty("--pin-offset-x", offsetX || 0);
+        // document.body.style.setProperty("--pin-offset-y", offsetY || 0);
     }
 
     /**
