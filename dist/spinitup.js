@@ -328,6 +328,7 @@ class SpinItUp {
             await this.draw();
             SpinItUp.log('SpinItUp instance initialized.');
         })());
+
     }
 
     static log() {
@@ -524,6 +525,7 @@ class SpinItUp {
         this.callback(this.state, { ...this.getWinningSegment() });
         clearTimeout(this.timeout);
         this.options.mode = this.options._mode;
+        this.canvas.style.animation = "none";
     }
 
     reset() {
