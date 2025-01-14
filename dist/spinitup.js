@@ -420,7 +420,6 @@ class SpinItUp {
                 slices[index].segment = data;
                 slices[index].draw(canvasWheel.context,canvasWheel.size,false);
             };
-            this.selectSlice(0);
         };
     }
 
@@ -450,7 +449,6 @@ class SpinItUp {
                 this.options.segments[index] = data;
                 slices[index].draw(canvasWheel.context,canvasWheel.size,false,data)
             };
-            this.selectSlice(0);
         };
     }
 
