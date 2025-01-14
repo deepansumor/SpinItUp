@@ -196,7 +196,7 @@ class Slice {
             textAlign = 'center',
             textBaseline = 'middle',
             padding = 0,
-            text: actualText = "",
+            text = "",
             textPosition = "left-to-right",
             textAngleOffset = 0
         } = this.segment;
@@ -205,11 +205,13 @@ class Slice {
         const baseFontSize = 15; // Base font size for 16 characters
         
         // Slice the text to a maximum of maxLength characters
-        const text = actualText.slice(0, maxLength);
+        const actualText = text.slice(0, maxLength);
+
+        _spinitup_js__WEBPACK_IMPORTED_MODULE_0__["default"].log('Drawing slice: actualText', {actualText});
         
         const calculateProportionalFontSize = () => {
-            // Calculate the scaling factor based on text length
-            const scaleFactor = maxLength / Math.max(text.length, 1); // Prevent division by zero
+            // Calculate the scaling factor based on actualText length
+            const scaleFactor = maxLength / Math.max(actualText.length, 1); // Prevent division by zero
             
             // Calculate new font size
             let newFontSize = baseFontSize * scaleFactor;
@@ -245,9 +247,9 @@ class Slice {
         context.textBaseline = textBaseline;
     
         if (this.textPositions[textPosition]) {
-            this.textPositions[textPosition](context, text, textX, textY, textAngle + textAngleOffset);
+            this.textPositions[textPosition](context, actualText, textX, textY, textAngle + textAngleOffset);
         } else {
-            this.textPositions['left-to-right'](context, text, textX, textY, textAngle + textAngleOffset);
+            this.textPositions['left-to-right'](context, actualText, textX, textY, textAngle + textAngleOffset);
         }
     }
     

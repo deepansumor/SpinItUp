@@ -48,5 +48,6 @@ const prodConfig = {
     },
 };
 
+
 // Export both configurations
 module.exports = [devConfig, prodConfig];
