@@ -309,6 +309,7 @@ class SpinItUp {
             STOPPED: 'stopped',
             FINISHED: 'finished',
             ERROR: 'error',
+            INITIALIZED:"init"
         };
 
         // Default options and user-provided overrides
@@ -348,6 +349,7 @@ class SpinItUp {
         ((async () => {
             await this.draw();
             SpinItUp.log('SpinItUp instance initialized.');
+            this.callback(this.states.INITIALIZED,{})
         })());
 
     }
