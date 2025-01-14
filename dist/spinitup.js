@@ -196,7 +196,7 @@ class Slice {
             textAlign = 'center',
             textBaseline = 'middle',
             padding = 0,
-            actualText = "",
+            text: actualText = "",
             textPosition = "left-to-right",
             textAngleOffset = 0
         } = this.segment;
