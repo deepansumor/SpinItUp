@@ -546,7 +546,9 @@ class SpinItUp {
         this.callback(this.state, { ...this.getWinningSegment() });
         clearTimeout(this.timeout);
         this.options.mode = this.options._mode;
-        this.canvas.style.animation = "none";
+        setTimeout(() => {
+            this.canvas.style.animation = "none";
+        }, 1000);
     }
 
     reset() {
